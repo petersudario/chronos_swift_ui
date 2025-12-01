@@ -15,7 +15,7 @@ struct chronos_Watch_AppApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack(path: $coordinator.path) {
-                PresetListView(coordinator: coordinator).navigationDestination(for: Destination.self) { destination in
+                PresetListView(coordinator: coordinator, presetListViewModel: PresetListViewModel(coordinator: coordinator)).navigationDestination(for: Destination.self) { destination in
                     
                     switch destination {
                     case .presetCreationView(let vm):

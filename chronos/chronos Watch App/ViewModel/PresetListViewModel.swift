@@ -7,6 +7,16 @@
 
 import Combine
 
-class PresetListViewModel: ObservableObject {
-    @Published var presets: [Preset] = []
+final class PresetListViewModel: ObservableObject {
+    
+    private weak var coordinator: AppCoordinator?
+    
+    init(coordinator: AppCoordinator?) {
+        self.coordinator = coordinator
+    }
+    
+    func navigateToPresetCreation() {
+        let presetCreationViewModel = PresetCreationViewModel(coordinator: coordinator)
+        self.coordinator?.push(.presetCreationView(presetCreationViewModel))
+    }
 }

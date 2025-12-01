@@ -10,10 +10,10 @@ import Foundation
 enum Destination: Hashable {
     static func == (lhs: Destination, rhs: Destination) -> Bool {
         switch (lhs, rhs) {
-            case (.presetCreationView(let lhsVM), .presetCreationView(let rhsVM)):
-            return ObjectIdentifier(lhsVM) == ObjectIdentifier(rhsVM)
-        default:
-            return false
+            case (.presetCreationView(let l), .presetCreationView(let r)):
+                return l === r
+            default:
+                return false
         }
     }
     

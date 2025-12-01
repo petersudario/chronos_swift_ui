@@ -15,3 +15,7 @@ struct PresetCreationView: View {
         Text("Preset creation view")
     }
 }
+
+#Preview {
+    PresetCreationView(presetCreationViewModel: PresetCreationViewModel(coordinator: AppCoordinator()))
+}
