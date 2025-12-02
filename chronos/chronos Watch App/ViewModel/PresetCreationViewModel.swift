@@ -5,7 +5,6 @@
 //  Created by Pepo on 01/12/25.
 //
 
-import Foundation
 import Combine
 
 final class PresetCreationViewModel: ObservableObject {
@@ -14,6 +13,12 @@ final class PresetCreationViewModel: ObservableObject {
     
     init(coordinator: AppCoordinator?) {
         self.coordinator = coordinator
+    }
+    
+    func navigateToStepCreation() {
+        let stepCreationViewModel: StepCreationViewModel = StepCreationViewModel(coordinator: coordinator)
+        
+        self.coordinator?.push(.stepCreationView(stepCreationViewModel))
     }
     
 }

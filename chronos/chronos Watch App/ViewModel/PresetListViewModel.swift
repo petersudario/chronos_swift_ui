@@ -17,6 +17,7 @@ final class PresetListViewModel: ObservableObject {
     
     func navigateToPresetCreation() {
         let presetCreationViewModel = PresetCreationViewModel(coordinator: coordinator)
+        
         self.coordinator?.push(.presetCreationView(presetCreationViewModel))
     }
 }

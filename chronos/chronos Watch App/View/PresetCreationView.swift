@@ -11,8 +11,33 @@ struct PresetCreationView: View {
     
     @ObservedObject var presetCreationViewModel: PresetCreationViewModel
     
+    @State private var newPresetName: String = ""
+    
     var body: some View {
-        Text("Preset creation view")
+        VStack (spacing: 30){
+            TextField("New Preset", text: $newPresetName)
+            
+                
+            VStack (spacing: 20) {
+                Text("No steps added.")
+                
+                HStack (alignment: .center, spacing: 15){
+                    CustomButtom(action: {
+                        presetCreationViewModel.navigateToStepCreation()
+                    }, buttonImageSystemName: "plus", backgroundColor: .gray)
+                    
+                    
+                    CustomButtom(action: {
+                        
+                    }, buttonImageSystemName: "checkmark")
+                    
+                }
+            }
+
+
+            
+            
+        }
     }
 }
 
