@@ -20,8 +20,6 @@ struct chronos_Watch_AppApp: App {
                     switch destination {
                     case .presetCreationView(let vm):
                         PresetCreationView(presetCreationViewModel: vm)
-                    case .stepCreationView(let vm):
-                        StepCreationView(stepCreationViewModel: vm)
                     }
                 }
             }

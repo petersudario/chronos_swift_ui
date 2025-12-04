@@ -6,7 +6,7 @@
 //
 
 enum StepType: String, CaseIterable, Identifiable {
-    case action, pause
+    case work, pause
     
     var id: Self { self }
     

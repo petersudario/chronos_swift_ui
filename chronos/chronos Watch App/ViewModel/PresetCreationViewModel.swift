@@ -6,19 +6,38 @@
 //
 
 import Combine
+import SwiftUI
 
-final class PresetCreationViewModel: ObservableObject {
-    
+class PresetCreationViewModel: ObservableObject {
     private weak var coordinator: AppCoordinator?
+
+    @Published var steps: [Step] = []
     
-    init(coordinator: AppCoordinator?) {
+    @Published var selectedStepType: StepType = .work
+    @Published var selectedTime: Date = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: Date())!
+    
+    init(coordinator: AppCoordinator? = nil) {
         self.coordinator = coordinator
     }
     
-    func navigateToStepCreation() {
-        let stepCreationViewModel: StepCreationViewModel = StepCreationViewModel(coordinator: coordinator)
+    func addStep() {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.hour, .minute, .second], from: selectedTime)
         
-        self.coordinator?.push(.stepCreationView(stepCreationViewModel))
+        let hours = components.hour ?? 0
+        let minutes = components.minute ?? 0
+        let seconds = components.second ?? 0
+        
+        // Converte tudo para segundos totais
+        let totalSeconds = TimeInterval((hours * 3600) + (minutes * 60) + seconds)
+        
+        // Só adiciona se tiver algum tempo
+        if totalSeconds > 0 {
+            let newStep = Step(type: selectedStepType, duration: totalSeconds)
+            steps.append(newStep)
+            
+            // Opcional: Resetar o picker para 00:00:00
+            // selectedTime = ...
+        }
     }
-    
 }

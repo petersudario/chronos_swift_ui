@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct Step {
-    let title: String
-    let type: String
+struct Step: Identifiable {
+    let id = UUID()
+    let type: StepType
+    let duration: TimeInterval
 }
