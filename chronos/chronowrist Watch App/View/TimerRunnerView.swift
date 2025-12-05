@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import WatchKit
 
 struct TimerRunnerView: View {
     @StateObject private var viewModel: TimerRunnerViewModel
     @Environment(\.dismiss) var dismiss
+    @State private var lastTick: Int = -1
     
     init(preset: Preset) {
         _viewModel = StateObject(wrappedValue: TimerRunnerViewModel(preset: preset))
@@ -31,6 +33,27 @@ struct TimerRunnerView: View {
         }
         .onDisappear {
             viewModel.stopEngine()
+        }
+        .onChange(of: viewModel.timeRemaining) { oldValue, newValue in
+            if viewModel.runnerState == .preparing {
+                let currentTick = Int(newValue)
+                if currentTick != lastTick && currentTick > 0 {
+                    WKInterfaceDevice.current().play(.click)
+                    lastTick = currentTick
+                }
+            }
+        }
+        .onChange(of: viewModel.currentStepIndex) {
+            if viewModel.runnerState == .running {
+                WKInterfaceDevice.current().play(.start)
+            }
+        }
+        .onChange(of: viewModel.runnerState) { oldState, newState in
+            if newState == .running {
+                WKInterfaceDevice.current().play(.start)
+            } else if newState == .finished {
+                WKInterfaceDevice.current().play(.success)
+            }
         }
         .navigationBarBackButtonHidden(true)
     }
@@ -109,7 +132,7 @@ struct TimerRunnerView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("End Workout")
-                
+              
                 Button(action: {
                     withAnimation {
                         viewModel.togglePause()
@@ -119,7 +142,7 @@ struct TimerRunnerView: View {
                         Circle()
                             .fill(Color.yellow)
                             .frame(width: 40, height: 40)
-                        
+                          
                         Image(systemName: viewModel.isPaused ? "play.fill" : "pause.fill")
                             .font(.body)
                             .foregroundStyle(.black)
@@ -152,7 +175,7 @@ struct TimerRunnerView: View {
                 .buttonStyle(.bordered)
                 .tint(.red)
                 .accessibilityLabel("Close")
-                
+              
                 Button(action: {
                     viewModel.restart()
                 }) {
@@ -170,3 +193,4 @@ struct TimerRunnerView: View {
         return "\(step.type.rawValue), \(viewModel.formattedTime()) remaining, Step \(viewModel.currentStepIndex + 1) of \(viewModel.preset.steps.count)"
     }
 }
+
