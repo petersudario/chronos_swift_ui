@@ -6,9 +6,19 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Step: Identifiable {
-    let id = UUID()
-    let type: StepType
-    let duration: TimeInterval
+@Model
+class Step {
+    var id: UUID
+    var type: StepType
+    var createdAt: Date
+    var duration: TimeInterval
+    
+    init(type: StepType, duration: TimeInterval) {
+        self.id = UUID()
+        self.type = type
+        self.createdAt = Date()
+        self.duration = duration
+    }
 }

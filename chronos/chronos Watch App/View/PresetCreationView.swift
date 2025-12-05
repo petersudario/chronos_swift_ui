@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct PresetCreationView: View {
     
     @ObservedObject var presetCreationViewModel: PresetCreationViewModel
     @State private var showingSheet = false
     @State private var newPresetName: String = ""
+    @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         VStack (spacing: 10){
@@ -51,9 +54,10 @@ struct PresetCreationView: View {
                     
                     
                     CustomButtom(action: {
-                        
+                        savePreset()
                     }, buttonImageSystemName: "checkmark")
-                    
+                    .disabled(newPresetName.isEmpty || presetCreationViewModel.steps.isEmpty)
+                    .opacity(newPresetName.isEmpty || presetCreationViewModel.steps.isEmpty ? 0.5 : 1.0)
                 }
             }
         }
@@ -61,6 +65,22 @@ struct PresetCreationView: View {
             StepCreationView(stepCreationViewModel: presetCreationViewModel)
         }
     }
+    
+    private func savePreset() {
+            // Cria o objeto Preset com os dados atuais
+            // O SwiftData vai "capturar" os Steps que estão no array e vincular a este Preset
+            let newPreset = Preset(
+                name: newPresetName,
+                steps: presetCreationViewModel.steps
+            )
+            
+            // Insere no "bloco de rascunho" do banco
+            context.insert(newPreset)
+            
+            // O Autosave do SwiftData lida com a persistência no disco.
+            // Fechamos a tela.
+            dismiss()
+        }
 }
 
 struct StepCreationView: View {

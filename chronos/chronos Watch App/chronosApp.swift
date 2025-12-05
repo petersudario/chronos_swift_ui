@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct chronos_Watch_AppApp: App {
@@ -24,5 +25,7 @@ struct chronos_Watch_AppApp: App {
                 }
             }
         }
+        .modelContainer(for: Preset.self)
+        
     }
 }

@@ -6,7 +6,21 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Preset: Identifiable {
-    let id: UUID = UUID()
+@Model
+class Preset {
+    var id: UUID
+    var name: String
+    var createdAt: Date
+    
+    @Relationship(deleteRule: .cascade)
+    var steps: [Step]
+    
+    init(name: String, steps: [Step]) {
+        self.id = UUID()
+        self.name = name
+        self.createdAt = Date()
+        self.steps = steps
+    }
 }
