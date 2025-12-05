@@ -42,11 +42,14 @@ struct TimerRunnerView: View {
             Text("Get Ready")
                 .font(.headline)
                 .foregroundStyle(.secondary)
+                .accessibilityAddTraits(.isHeader)
             
             Text(viewModel.timeRemaining > 0 ? "\(Int(viewModel.timeRemaining))" : "Start!")
                 .font(.system(size: 60, weight: .bold, design: .rounded))
                 .contentTransition(.numericText())
                 .foregroundStyle(.green)
+                .accessibilityLabel(viewModel.timeRemaining > 0 ? "\(Int(viewModel.timeRemaining)) seconds" : "Start")
+                .accessibilityAddTraits(.updatesFrequently)
             
             Spacer()
             
@@ -58,6 +61,8 @@ struct TimerRunnerView: View {
                     .foregroundColor(.red)
             }
             .padding(.bottom, 20)
+            .accessibilityLabel("Cancel countdown")
+            .accessibilityHint("Goes back to the preset list")
         }
     }
     
@@ -65,23 +70,28 @@ struct TimerRunnerView: View {
         VStack(spacing: 5) {
             Spacer()
             
-            if let step = viewModel.currentStep {
-                Text(step.type.rawValue.capitalized)
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundStyle(step.type == .work ? .green : .orange)
-                    .opacity(viewModel.isPaused ? 0.6 : 1.0)
-                
-                Text(viewModel.formattedTime())
-                    .font(.system(size: 50, weight: .semibold, design: .monospaced))
-                    .foregroundStyle(.white)
-                    .opacity(viewModel.isPaused ? 0.6 : 1.0)
-                
-                Text("Step \(viewModel.currentStepIndex + 1) of \(viewModel.preset.steps.count)")
-                    .font(.footnote)
-                    .foregroundStyle(.gray)
+            VStack {
+                if let step = viewModel.currentStep {
+                    Text(step.type.rawValue.capitalized)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundStyle(step.type == .work ? .green : .orange)
+                        .opacity(viewModel.isPaused ? 0.6 : 1.0)
+                    
+                    Text(viewModel.formattedTime())
+                        .font(.system(size: 50, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(.white)
+                        .opacity(viewModel.isPaused ? 0.6 : 1.0)
+                    
+                    Text("Step \(viewModel.currentStepIndex + 1) of \(viewModel.preset.steps.count)")
+                        .font(.footnote)
+                        .foregroundStyle(.gray)
+                }
             }
-                        
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.updatesFrequently)
+            .accessibilityLabel(voiceOverStatusString())
+                      
             HStack(spacing: 30) {
                 Button(action: {
                     viewModel.stopEngine()
@@ -98,6 +108,7 @@ struct TimerRunnerView: View {
                     }
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("End Workout")
                 
                 Button(action: {
                     withAnimation {
@@ -115,6 +126,7 @@ struct TimerRunnerView: View {
                     }
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(viewModel.isPaused ? "Resume Timer" : "Pause Timer")
             }
             .padding(.bottom, 20)
         }
@@ -125,9 +137,11 @@ struct TimerRunnerView: View {
             Image(systemName: "flag.checkered")
                 .font(.largeTitle)
                 .foregroundStyle(.yellow)
+                .accessibilityHidden(true)
             
             Text("Workout Complete!")
                 .font(.headline)
+                .accessibilityAddTraits(.isHeader)
             
             HStack(spacing: 15) {
                 Button(action: {
@@ -137,6 +151,7 @@ struct TimerRunnerView: View {
                 }
                 .buttonStyle(.bordered)
                 .tint(.red)
+                .accessibilityLabel("Close")
                 
                 Button(action: {
                     viewModel.restart()
@@ -145,8 +160,13 @@ struct TimerRunnerView: View {
                 }
                 .buttonStyle(.bordered)
                 .tint(.green)
+                .accessibilityLabel("Restart Workout")
             }
         }
     }
+    
+    private func voiceOverStatusString() -> String {
+        guard let step = viewModel.currentStep else { return "" }
+        return "\(step.type.rawValue), \(viewModel.formattedTime()) remaining, Step \(viewModel.currentStepIndex + 1) of \(viewModel.preset.steps.count)"
+    }
 }
-
